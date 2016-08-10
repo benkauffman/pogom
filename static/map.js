@@ -83,8 +83,8 @@ function is_logged_in(){
 }
 
 function initMap() {
-    var initLat = 40.782850;  // NYC Central Park
-    var initLng = -73.965288;
+    var initLat = 45.522855;  // NYC Central Park
+    var initLng = -122.663026;
 
     if (initialScanLocations.length !== 0) {
         initLat = initialScanLocations[0].latitude;
