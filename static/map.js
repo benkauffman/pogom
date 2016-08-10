@@ -40,7 +40,7 @@ document.getElementById('pokemon-checkbox').checked = getFromStorage("displayPok
 document.getElementById('gyms-checkbox').checked = getFromStorage("displayGyms", "true");
 document.getElementById('coverage-checkbox').checked = getFromStorage("displayCoverage", "true");
 
- 
+
 $.getJSON("static/locales/pokemon.en.json").done(function(data) {
     var pokeList = [];
 
@@ -99,7 +99,7 @@ function initMap() {
         streetViewControl: false,
         disableAutoPan: true
     });
-    
+
     updateScanLocations(initialScanLocations);
     updateMap();
 
@@ -149,11 +149,14 @@ function initMap() {
 };
 
 function initGeoLocation() {
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
         });
     }
+  }
+
 }
 
 function pokemonLabel(name, id, disappear_time, latitude, longitude) {
@@ -408,7 +411,7 @@ function updateMap() {
                 return false; // in case the checkbox was unchecked in the meantime.
             }
 
-            if (!(item.encounter_id in map_pokemons) && 
+            if (!(item.encounter_id in map_pokemons) &&
                     excludedPokemon.indexOf(item.pokemon_id) < 0) {
                 // add marker to map and item to dict
                 if (item.marker) item.marker.setMap(null);
@@ -548,7 +551,7 @@ function statusLabels(status) {
     var timeSinceScan = status['complete-scan-time'];
     if (timeSinceScan)
         $fullScanLabel.html("Last scan in "+ formatTimeDiff(timeSinceScan))
-    
+
     var currentScanPercentString = Number((status['current-scan-percent']).toFixed(2)).toString();
     $scanPercentLabel.html("Current Scan: "+currentScanPercentString+"%");
 
