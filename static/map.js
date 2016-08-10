@@ -94,7 +94,7 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         // Change this to geolocation?
         center: {lat: initLat, lng: initLng},
-        zoom: 13,
+        zoom: 16,
         mapTypeControl: false,
         streetViewControl: false,
         disableAutoPan: true
