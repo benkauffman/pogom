@@ -15,9 +15,9 @@ var coverCircles = [];
 var newLocationMarker;
 var isMobile = (/iphone|ipod|android|ie|blackberry|fennec/).test(navigator.userAgent.toLowerCase());
 
-if(!isMobile){
-  onload=function(){setTimeout(function(){cycleMarkers()}, 2500)};
-}
+// if(!isMobile){
+//   onload=function(){setTimeout(function(){cycleMarkers()}, 2500)};
+// }
 
 
 try {
