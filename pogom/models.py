@@ -9,8 +9,11 @@ from peewee import Model, SqliteDatabase, InsertQuery, IntegerField, \
 from datetime import datetime
 from base64 import b64encode
 import threading
+import time
 
 from .utils import get_pokemon_name
+
+emptyCount = 0
 
 db = SqliteDatabase('pogom.db', pragmas=(
     ('journal_mode', 'WAL'),
@@ -39,7 +42,7 @@ class Pokemon(BaseModel):
     latitude = FloatField()
     longitude = FloatField()
     disappear_time = DateTimeField()
-    
+
     class Meta:
         primary_key = CompositeKey('encounter_id', 'disappear_time')
 
@@ -106,11 +109,17 @@ def parse_map(map_dict):
     pokemons = {}
     pokestops = {}
     gyms = {}
+    global emptyCount
+
+    log.info("emptyCount = " + `emptyCount`)
 
     cells = map_dict['responses']['GET_MAP_OBJECTS']['map_cells']
     if sum(len(cell.keys()) for cell in cells) == len(cells) * 2:
         log.warning("Received valid response but without any data. Possibly rate-limited?")
-    
+        log.info("Start sleep for 3 seconds to help resolve rate-limits")
+        time.sleep(3) # delays for 3 seconds to help resolve rate-limits
+        log.info("End sleep")
+
     for cell in cells:
         for p in cell.get('wild_pokemons', []):
             if p['encounter_id'] in pokemons:
@@ -182,7 +191,7 @@ def parse_map(map_dict):
                     'last_modified': datetime.utcfromtimestamp(
                             f['last_modified_timestamp_ms'] / 1000.0),
                 }
-                
+
     with db.atomic() and lock:
         if pokemons:
             log.info("Upserting {} pokemon".format(len(pokemons)))
