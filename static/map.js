@@ -14,7 +14,6 @@ var scanLocations = new Map();
 var coverCircles = [];
 var newLocationMarker;
 
-onload=function(){setTimeout(function(){cycleMarkers()}, 2500)};
 
 try {
     excludedPokemon = JSON.parse(localStorage.excludedPokemon);
@@ -295,21 +294,30 @@ function clearStaleMarkers(){
         }
     });
 }
+
 function cycleMarkers(){
   var timer = 0;
-  Object.keys(map_pokemons).forEach(function(key,index)){
-    var marker = map_pokemons[key].marker;
-    setTimeout(function(){
-      marker.infoWindow.open(map,marker);
-    });
-    timer = timer + 5000;
-    setTimeout(function(){
-      marker.infoWindow.close();
-      if(Object.keys(map_pokemons).length === index + 1){
-        cycleMarkers();
-      }
-    });
-  }
+  var wait = 5000;
+  Object.keys(map_pokemons).forEach(function(key,index) {
+   // key: the name of the object key
+   // index: the ordinal position of the key within the object
+   var marker = map_pokemons[key].marker;
+
+   setTimeout(function(){
+     marker.infoWindow.open(map, marker)
+  }, timer);
+
+  timer = timer + wait;
+
+  setTimeout(function(){
+    marker.infoWindow.close();
+    if(Object.keys(map_pokemons).length === index + 1){
+      cycleMarkers();
+    }
+  }, timer);
+console.log(timer)
+  });
+
 }
 
 function newMarker(latitude, longitude) {
