@@ -13,6 +13,11 @@ var map;
 var scanLocations = new Map();
 var coverCircles = [];
 var newLocationMarker;
+var isMobile = (/iphone|ipod|android|ie|blackberry|fennec/).test(navigator.userAgent.toLowerCase());
+
+if(!isMobile){
+  onload=function(){setTimeout(function(){cycleMarkers()}, 2500)};
+}
 
 
 try {
@@ -149,7 +154,7 @@ function initMap() {
 };
 
 function initGeoLocation() {
-  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  if(isMobile) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
@@ -266,7 +271,7 @@ function addListeners(marker){
         marker.persist = null;
     });
 
-    var isMobile = (/iphone|ipod|android|ie|blackberry|fennec/).test(navigator.userAgent.toLowerCase());
+
 
     if (!isMobile){
         marker.addListener('mouseover', function() {
@@ -297,7 +302,6 @@ function clearStaleMarkers(){
 
 function cycleMarkers(){
   var timer = 0;
-  var wait = 5000;
   Object.keys(map_pokemons).forEach(function(key,index) {
    // key: the name of the object key
    // index: the ordinal position of the key within the object
@@ -305,9 +309,9 @@ function cycleMarkers(){
 
    setTimeout(function(){
      marker.infoWindow.open(map, marker)
-  }, timer);
+   }, timer);
 
-  timer = timer + wait;
+  timer = timer + 5000;
 
   setTimeout(function(){
     marker.infoWindow.close();
@@ -315,9 +319,7 @@ function cycleMarkers(){
       cycleMarkers();
     }
   }, timer);
-console.log(timer)
   });
-
 }
 
 function newMarker(latitude, longitude) {
