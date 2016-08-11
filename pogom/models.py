@@ -13,8 +13,6 @@ import time
 
 from .utils import get_pokemon_name
 
-emptyCount = 0
-
 db = SqliteDatabase('pogom.db', pragmas=(
     ('journal_mode', 'WAL'),
     ('cache_size', 10000),
@@ -109,9 +107,6 @@ def parse_map(map_dict):
     pokemons = {}
     pokestops = {}
     gyms = {}
-    global emptyCount
-
-    log.info("emptyCount = " + `emptyCount`)
 
     cells = map_dict['responses']['GET_MAP_OBJECTS']['map_cells']
     if sum(len(cell.keys()) for cell in cells) == len(cells) * 2:
