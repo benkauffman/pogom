@@ -166,6 +166,20 @@ function initMap() {
 function initGeoLocation() {
   var _lat = getParameterByName("lat", null);
   var _lon = getParameterByName("lon", null);
+  var _location = getParameterByName("location", null);
+
+  if(_location){
+    if(_location.toLowerCase() == 'devnow' || _location.toLowerCase() == 'developmentnow'){
+      var _lat = 45.52281;
+      var _lon = -122.6631125;
+    }else if (_location.toLowerCase() == '+c' || _location.toLowerCase() == 'citizen') {
+      var _lat = 45.537492;
+      var _lon = -122.691081;
+    }
+
+  }
+
+
   if(_lat && _lon && _lat > 0 && _lon < 0){
     map.setCenter({lat: parseFloat(_lat), lng: parseFloat(_lon)});
   }else{
