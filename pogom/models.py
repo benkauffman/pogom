@@ -76,6 +76,23 @@ class Pokemon(BaseModel):
             p['pokemon_name'] = get_pokemon_name(p['pokemon_id'])
         return pokemons
 
+    @classmethod
+    def get_heat_stats(cls):
+        query = (Pokemon
+                 .select(Pokemon.pokemon_id, fn.COUNT(Pokemon.pokemon_id).alias('count'), Pokemon.latitude, Pokemon.longitude)
+                 .group_by(Pokemon.latitude, Pokemon.longitude, Pokemon.pokemon_id)
+                 .order_by(-SQL('count'))
+                 .dicts())
+
+        pokemons = list(query)
+
+        known_pokemon = set(p['pokemon_id'] for p in query)
+        unknown_pokemon = set(range(1, 151)).difference(known_pokemon)
+        pokemons.extend({'pokemon_id': i, 'count': 0} for i in unknown_pokemon)
+        for p in pokemons:
+            p['pokemon_name'] = get_pokemon_name(p['pokemon_id'])
+
+        return pokemons
 
 class Pokestop(BaseModel):
     pokestop_id = CharField(primary_key=True)
@@ -114,6 +131,7 @@ def parse_map(map_dict):
         log.info("Start sleep for 3 seconds to help resolve rate-limits")
         time.sleep(3) # delays for 3 seconds to help resolve rate-limits
         log.info("End sleep")
+
 
     for cell in cells:
         for p in cell.get('wild_pokemons', []):
