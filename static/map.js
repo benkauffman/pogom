@@ -14,6 +14,7 @@ var scanLocations = new Map();
 var coverCircles = [];
 var newLocationMarker;
 
+onload=function(){setTimeout(function(){cycleMarkers()}, 2500)};
 
 try {
     excludedPokemon = JSON.parse(localStorage.excludedPokemon);
@@ -83,7 +84,7 @@ function is_logged_in(){
 }
 
 function initMap() {
-    var initLat = 45.522855;  // NYC Central Park
+    var initLat = 45.522855;  // Portland Or
     var initLng = -122.663026;
 
     if (initialScanLocations.length !== 0) {
@@ -280,12 +281,13 @@ function addListeners(marker){
             }
         });
     }
+
     return marker
 }
 
 function clearStaleMarkers(){
     $.each(map_pokemons, function(key, value) {
-        if (map_pokemons[key]['disappear_time'] < new Date().getTime() ||
+        if (map_pokemons[key]['disappear_time'] <= new Date().getTime() ||
                 excludedPokemon.indexOf(map_pokemons[key]['pokemon_id']) >= 0) {
             map_pokemons[key].marker.setMap(null);
             console.log("removing marker with key "+key);
@@ -293,7 +295,22 @@ function clearStaleMarkers(){
         }
     });
 }
-
+function cycleMarkers(){
+  var timer = 0;
+  Object.keys(map_pokemons).forEach(function(key,index)){
+    var marker = map_pokemons[key].marker;
+    setTimeout(function(){
+      marker.infoWindow.open(map,marker);
+    });
+    timer = timer + 5000;
+    setTimeout(function(){
+      marker.infoWindow.close();
+      if(Object.keys(map_pokemons).length === index + 1){
+        cycleMarkers();
+      }
+    });
+  }
+}
 
 function newMarker(latitude, longitude) {
     var marker = new google.maps.Marker({
