@@ -15,6 +15,16 @@ var coverCircles = [];
 var newLocationMarker;
 var isMobile = (/iphone|ipod|android|ie|blackberry|fennec/).test(navigator.userAgent.toLowerCase());
 
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 // if(!isMobile){
 //   onload=function(){setTimeout(function(){cycleMarkers()}, 2500)};
 // }
@@ -154,14 +164,19 @@ function initMap() {
 };
 
 function initGeoLocation() {
-  if(isMobile) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
-        });
+  var _lat = getParameterByName("lat", null);
+  var _lon = getParameterByName("lon", null);
+  if(_lat && _lon && _lat > 0 && _lon < 0){
+    map.setCenter({lat: parseFloat(_lat), lng: parseFloat(_lon)});
+  }else{
+    if(isMobile) {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+              map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+          });
+      }
     }
   }
-
 }
 
 function pokemonLabel(name, id, disappear_time, latitude, longitude) {
