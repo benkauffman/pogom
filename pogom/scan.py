@@ -13,6 +13,9 @@ from datetime import datetime
 from itertools import izip, count
 from threading import Thread
 
+from json import load
+from urllib2 import urlopen
+
 from pgoapi import PGoApi
 from pgoapi.utilities import f2i, get_cell_ids, get_pos_by_name
 from sys import maxint
@@ -75,6 +78,9 @@ class Scanner(Thread):
             log.info('Completed {:5.2f}% of scan.'.format(ScanMetrics.CURRENT_SCAN_PERCENT))
 
     def scan(self):
+
+        log.info('Current public IP address: %s', load(urlopen('http://httpbin.org/ip'))['origin'])
+
         ScanMetrics.NUM_STEPS = len(self.scan_config.COVER)
         log.info("Starting scan of {} locations".format(ScanMetrics.NUM_STEPS))
 
